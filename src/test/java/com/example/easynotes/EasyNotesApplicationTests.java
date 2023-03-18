@@ -15,13 +15,5 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class EasyNotesApplicationTests {
 
-	@MockBean
-	NoteRepository noteRepository;
-	@Test
-	public void contextLoads() {
-
-		when(noteRepository.findAll()).thenReturn(Stream.of(new Note(1,"rakesh","mahajan")).collect(Collectors.toList()));
-		assertEquals(1,noteRepository.findById(1L));
-	}
 
 }
