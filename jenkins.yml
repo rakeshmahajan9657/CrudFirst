@@ -1,0 +1,43 @@
+pipeline {
+ environment {
+  dockerimagename = "rakesh9657/demo"
+  dockerImage=""
+  }
+  
+  agent any
+  
+  stages {
+  
+   stage('Checkout Source') {
+   
+    steps {
+     git 'https://github.com/rakeshmahajan9657/CrudFirst.git'
+    }
+   }
+   
+   stage('Build Image') {
+    steps {
+     script {
+      dockerImage = docker.build demo
+     }
+    }
+   }
+   
+   stage('Pushing Image') {
+    environment {
+             registryCredential = 'dockerhublogin'
+           }
+    steps {
+     script {
+       docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ){
+        dockerImage.push("latest")
+       }
+      }
+     }
+    }
+    stage('Deploying App to Kunernetes') {
+     steps {
+      script {
+        kubernetesDeploy(configs: "jenkins.yml", kubeconfigId: "kubernetes" )      
+       }
+      }
